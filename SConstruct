@@ -5,7 +5,7 @@ import sys
 from methods import print_error
 
 
-libname = "EXTENSION-NAME"
+libname = "GDNetwork"
 projectdir = "project"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
@@ -38,7 +38,21 @@ Run the following command to download godot-cpp:
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
-sources = Glob("src/*.cpp")
+def recursive_glob(dir, pattern):
+    matches = []
+    for root, dirs, files in os.walk(dir):
+        for f in files:
+            if f.endswith(pattern):
+                matches.append(os.path.join(root, f))
+    return matches
+
+sources = recursive_glob("src", ".cpp")
+
+# sources = Glob('src/*.cpp') + Glob('src/*/*.cpp') + Glob('src/*/*/*.cpp')
+
+
+# env.Append(CPPPATH=["src/"])
+# sources = Glob("src/*.cpp")
 
 if env["target"] in ["editor", "template_debug"]:
     try:
