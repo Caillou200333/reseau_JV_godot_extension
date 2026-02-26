@@ -7,4 +7,6 @@ script = ExtResource("1_jdh55")
 
 [node name="GDNetworkManager" type="GDNetworkManager" parent="."]
 
+[node name="GDEntityManager" type="GDEntityManager" parent="."]
+
 [connection signal="packet_received" from="GDNetworkManager" to="." method="_on_gd_network_manager_packet_received"]

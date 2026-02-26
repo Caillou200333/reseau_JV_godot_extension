@@ -10,6 +10,14 @@
 #include "gdexample.h"
 #include "Network/GDNetworkManager.h"
 
+#include "Network/Messages/GDBaseMessage.h"
+#include "Network/Messages/GDHELOMessage.h"
+#include "Network/Messages/GDGameplayMessage.h"
+#include "Network/Messages/GDTextMessage.h"
+
+#include "Entities/GDEntity.h"
+#include "Entities/GDEntityManager.h"
+
 using namespace godot;
 
 void initialize_gdextension_types(ModuleInitializationLevel p_level)
@@ -21,6 +29,14 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	GDREGISTER_CLASS(Summator);
 	GDREGISTER_RUNTIME_CLASS(GDExample);
 	GDREGISTER_RUNTIME_CLASS(GDNetworkManager);
+
+	GDREGISTER_CLASS(GDBaseMessage);
+	GDREGISTER_CLASS(GDHELOMessage);
+	GDREGISTER_CLASS(GDGameplayMessage);
+	GDREGISTER_CLASS(GDTextMessage);
+	
+	GDREGISTER_RUNTIME_CLASS(GDEntity);
+	GDREGISTER_RUNTIME_CLASS(GDEntityManager);
 }
 
 void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {

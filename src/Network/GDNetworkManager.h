@@ -21,6 +21,8 @@
 
 using namespace godot;
 
+#include "Network/Messages/GDBaseMessage.h"
+
 class GDNetworkManager : public Node {
     GDCLASS(GDNetworkManager, Node)
 
@@ -46,7 +48,7 @@ public:
     bool Bind(int port);
 
     // Send a packet to a specific IP/Port
-    void Send(String ip, int port, PackedByteArray data);
+    void Send(String ip, int port, GDBaseMessage* message);
 
     // Check for incoming packets (Call this in _process)
     void Receive();

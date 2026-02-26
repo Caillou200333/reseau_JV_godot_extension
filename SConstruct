@@ -38,6 +38,8 @@ Run the following command to download godot-cpp:
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
 env.Append(CPPPATH=["src/"])
+env.Append(CPPPATH=["network_core/includes"])
+
 def recursive_glob(dir, pattern):
     matches = []
     for root, dirs, files in os.walk(dir):
@@ -53,6 +55,10 @@ sources = recursive_glob("src", ".cpp")
 
 # env.Append(CPPPATH=["src/"])
 # sources = Glob("src/*.cpp")
+env.Append(LIBPATH=["network_core/build"])
+env.Append(LIBS=["network_core"])
+
+
 
 if env["target"] in ["editor", "template_debug"]:
     try:
