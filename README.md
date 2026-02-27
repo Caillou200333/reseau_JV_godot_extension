@@ -1,15 +1,57 @@
-# godot-cpp template
-This repository serves as a quickstart template for GDExtension development with Godot 4.0+.
+# Godot 
+This repository is a video game network project using a GDExtension in C++ with Godot 4.0+.
+The aim is to create a vampire survivor like video game operating through a server coded in C++.
 
 ## Contents
 * Preconfigured source files for C++ development of the GDExtension ([src/](./src/))
-* An empty Godot project in [project/](./project), to test the GDExtension
+* A godot project in [project/](./project) corresponding the client executable
 * godot-cpp as a submodule (`godot-cpp/`)
 * GitHub Issues template ([.github/ISSUE_TEMPLATE.yml](./.github/ISSUE_TEMPLATE.yml))
 * GitHub CI/CD workflows to publish your library packages when creating a release ([.github/workflows/builds.yml](./.github/workflows/builds.yml))
 * An SConstruct file with various functions, such as boilerplate for [Adding documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/cpp/gdextension_docs_system.html)
+* Preconfigured source files for C++ development of the server executable ([server/](./server/))
+* Preconfigured source files for C++ development of a common library used both by the GDExtension and the server ([network_core/](./network_core/))
 
-## Usage - Template
+## Usage - Library and Server
+* First you need to compile the network_core library : contains a CMakeLists.txt and a makefile to auto-compile the library (`libnetwork_core.a`) into the build directory ([network_core/build/](./network_core/build/))
+
+Commandlines to build :
+```
+mkdir network_core/build
+cd network_core/build
+cmake ../CMakeLists.txt
+cmake --build .
+```
+or 
+```
+make build
+```
+
+* Next you need to compile the server executable : contains a CMakeLists.txt and a makefile to auto-compile the server (`server`) into the build directory ([server/build/](./network_core/build/))
+
+Commandlines to build (same as precedent) :
+```
+mkdir server/build
+cd server/build
+cmake ../CMakeLists.txt
+cmake --build .
+```
+or 
+```
+make build
+```
+
+Commandlines to run :
+```
+./server/build/server
+```
+or 
+```
+cd server
+make run
+```
+
+## Usage - Template (basic GDExtensions template usage)
 
 To use this template, log in to GitHub and click the green "Use this template" button at the top of the repository page. This will let you create a copy of this repository with a clean git history.
 
