@@ -28,12 +28,18 @@ class GDNetworkManager : public Node {
 
 private:
     socket_t udp_socket = INVALID_SOCKET;
-        
+    
     // Internal helper to set socket to non-blocking mode
     void SetNonBlocking(socket_t sock);
         
     // Internal helper to close socket safely on all platforms
     void Close();
+
+    // Send the given message to given ip and port
+    void SendLogic(const char* ip, int port, const BaseMessage* msg);
+
+    // RTT loop function
+    void RTTLoopFunction(const char* ip, int port);
 
 protected:
     static void _bind_methods();
@@ -48,8 +54,14 @@ public:
     bool Bind(int port);
 
     // Send a packet to a specific IP/Port
-    void Send(String ip, int port, GDBaseMessage* message);
+    void Send(String ip, int port, const Ref<GDBaseMessage>& message);
 
     // Check for incoming packets (Call this in _process)
     void Receive();
+
+    // Start the RTT-request loop
+    void StartRTTLoop(String ip, int port);
+    
+    // Stop the RTT-request loop
+    void StopRTTLoop();
 };

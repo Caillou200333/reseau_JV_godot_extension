@@ -14,6 +14,6 @@ public:
     // Getters
     uint32_t GetNetworkID() const;
     uint32_t GetClassID() const;
-    uint8_t GetX() const;
-    uint8_t GetY() const;
+    uint32_t GetX() const;
+    uint32_t GetY() const;
 };

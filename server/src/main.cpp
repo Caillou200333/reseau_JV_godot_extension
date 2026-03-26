@@ -1,8 +1,12 @@
 #include "ecs/ECS_server.hpp"
+#include "message_factory.hpp"
 
 #include <iostream>
 
 int main() {
+    // RegisterAll the kind of messages beforehand
+    MessageFactory::RegisterAll();
+
     try {
         ECSServer server(8080);
         server.Start();

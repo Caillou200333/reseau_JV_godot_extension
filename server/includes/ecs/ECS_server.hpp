@@ -12,7 +12,13 @@ public:
 protected:
     virtual void HandlePacket(struct Packet& packet_to_handle) override;
 
+    virtual void PostProcess() override;
+
 private:
     ClientManager _client_manager = ClientManager();
     EntityManager _entity_manager = EntityManager();
+
+    void Replicate(const struct ObjectContext* entity_context) const;
+
+    void ApplyInput(PlayerID player_id, struct ObjectContext* entity_context);
 };

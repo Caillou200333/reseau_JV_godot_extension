@@ -1,12 +1,15 @@
 #pragma once
 
+#include "gameplay/common_tools.hpp"
+
 #include <unordered_set>
 #include <netinet/in.h>   // sockaddr_in
 
 struct ClientConnection {
     struct sockaddr_in address;
-    char client_name;
-    //NetworkID controlled_entity; 
+    char client_name = 'A';
+    PlayerID client_id = INVALID_ID;
+    NetworkID controlled_entity = -1; 
     
     // Comparaison basée sur l'adresse IP et le port
     bool operator==(const ClientConnection &other) const {
@@ -30,16 +33,20 @@ class ClientManager {
 private:
     std::unordered_set<ClientConnection> clients;
 
-    inline static const struct ClientConnection EmptyClient = {};
+    inline static const struct ClientConnection EmptyClient = {{}, '0', INVALID_ID, 0};
 
     char _next_client_name = 'A';
 
     char GenerateClientName();
 
+    PlayerID _next_client_id = 1;
+
+    PlayerID GenerateClientID();
+
 public:
     ClientManager() = default;
 
-    const struct ClientConnection& AddClient(const sockaddr_in &addr);
+    const struct ClientConnection& AddClient(const sockaddr_in &addr, NetworkID network_id);
 
     void RemoveClient(const sockaddr_in &addr);
 

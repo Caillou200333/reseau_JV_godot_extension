@@ -6,10 +6,22 @@
 
 #include <unordered_map>
 
+struct Position {
+    double x;
+    double y;
+};
+
+struct Velocity : Position {};
+
 struct ObjectContext {
     NetworkID network_id;
     ClassID class_id;
     entt::entity local_entity;
+
+    struct Position& GetPosition() const;
+    struct Velocity& GetVelocity() const;
+
+    inline static entt::registry _ecs;
 };
 
 class EntityManager {
@@ -17,9 +29,7 @@ private:
     // NetworkID -> local entity ECS
     std::unordered_map<NetworkID, struct ObjectContext> network_to_entity;
 
-    entt::registry _ecs;
-
-    inline static const struct ObjectContext EmptyObject = {0, ClassID::PLAYER_CLASS, entt::null};
+    inline static struct ObjectContext* EmptyObject = nullptr;
 
     NetworkID _next_network_id = 0;
 
@@ -28,11 +38,11 @@ private:
 public:
     EntityManager() = default;
     
-    const struct ObjectContext& CreateEntity(ClassID class_id);
+    struct ObjectContext* CreateEntity(ClassID class_id, double x = 0., double y = 0.);
 
     void RemoveEntity(NetworkID id);
 
-    const struct ObjectContext& GetEntity(NetworkID id) const;
+    struct ObjectContext* GetEntity(NetworkID id);
 
     bool HasEntity(NetworkID id) const;
 

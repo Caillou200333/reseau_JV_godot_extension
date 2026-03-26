@@ -13,6 +13,7 @@
 #include "Network/Messages/GDBaseMessage.h"
 #include "Network/Messages/GDHELOMessage.h"
 #include "Network/Messages/GDGameplayMessage.h"
+#include "Network/Messages/GDInputMessage.h"
 #include "Network/Messages/GDTextMessage.h"
 
 #include "Entities/GDEntity.h"
@@ -33,7 +34,10 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	GDREGISTER_CLASS(GDBaseMessage);
 	GDREGISTER_CLASS(GDHELOMessage);
 	GDREGISTER_CLASS(GDGameplayMessage);
+	GDREGISTER_CLASS(GDInputMessage);
 	GDREGISTER_CLASS(GDTextMessage);
+
+	GDREGISTER_CLASS(GDInput);
 	
 	GDREGISTER_RUNTIME_CLASS(GDEntity);
 	GDREGISTER_RUNTIME_CLASS(GDEntityManager);

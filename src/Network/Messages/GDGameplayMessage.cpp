@@ -24,11 +24,11 @@ uint32_t GDGameplayMessage::GetClassID() const {
     auto gmplMsg = std::static_pointer_cast<GameplayMessage>(_message);
     return gmplMsg->_class_id;
 }
-uint8_t GDGameplayMessage::GetX() const {
+uint32_t GDGameplayMessage::GetX() const {
     auto gmplMsg = std::static_pointer_cast<GameplayMessage>(_message);
     return gmplMsg->_x;
 }
-uint8_t GDGameplayMessage::GetY() const {
+uint32_t GDGameplayMessage::GetY() const {
     auto gmplMsg = std::static_pointer_cast<GameplayMessage>(_message);
     return gmplMsg->_y;
 }

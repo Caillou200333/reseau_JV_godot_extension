@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dh0oj81pufivs"]
+[gd_scene load_steps=3 format=3 uid="uid://dh0oj81pufivs"]
 
 [ext_resource type="Script" uid="uid://bkwk40ybs8kgm" path="res://example.gd" id="1_jdh55"]
+[ext_resource type="Script" uid="uid://ba74vqhqamfl4" path="res://gd_input_manager.gd" id="2_n51mc"]
 
 [node name="Node" type="Node"]
 script = ExtResource("1_jdh55")
@@ -8,5 +9,8 @@ script = ExtResource("1_jdh55")
 [node name="GDNetworkManager" type="GDNetworkManager" parent="."]
 
 [node name="GDEntityManager" type="GDEntityManager" parent="."]
+
+[node name="GDInputManager" type="Node2D" parent="."]
+script = ExtResource("2_n51mc")
 
 [connection signal="packet_received" from="GDNetworkManager" to="." method="_on_gd_network_manager_packet_received"]

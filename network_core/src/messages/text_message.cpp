@@ -3,7 +3,7 @@
 
 TextMessage::TextMessage():TextMessage(nullptr, 0) {}
 
-TextMessage::TextMessage(const char* data, MessageSize size):BaseMessage(TEXT) {
+TextMessage::TextMessage(const char* data, MessageSize size):BaseMessage(MessageType::TEXT) {
     _payload_size = size ;
     if (_payload_size <= 0) {
         _data = nullptr;

@@ -1,6 +1,10 @@
 #include "network/server.hpp"
 
 #include <iostream>
+#include <chrono>
+
+using Clock = std::chrono::high_resolution_clock;
+using TimePoint = std::chrono::time_point<Clock>;
 
 Server::Server(int port):_port(port) {}
 
@@ -18,11 +22,24 @@ void Server::Start(bool set_non_blocking) {
 
     SetNonBlocking(set_non_blocking);
 
+    double accumulator = 0.;
+    TimePoint last_time = Clock::now();
+
     while (true) {
+        auto now = Clock::now();
+        std::chrono::duration<double> diff = now - last_time;
+        last_time = now;
+        accumulator += diff.count();
+
         ReceivePackets();
 
         HandlePackets();
-    }
+
+        while (accumulator >= dt) {
+            accumulator -= dt;
+            PostProcess();
+        }
+    }   
 }
 
 void Server::Close() {
@@ -141,3 +158,5 @@ void Server::HandlePackets() {
 
 // Method to override
 void Server::HandlePacket(struct Packet& packet_to_handle) { std::cout << "Packet : " << &packet_to_handle << std::endl; }
+
+void Server::PostProcess() {}

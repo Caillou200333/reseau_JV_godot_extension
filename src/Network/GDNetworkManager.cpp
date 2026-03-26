@@ -4,6 +4,8 @@
 #include "Network/Messages/GDGameplayMessage.h"
 #include "Network/Messages/GDTextMessage.h"
 
+#include "messages/rtt_message.hpp"
+
 #include <iostream>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
@@ -25,6 +27,7 @@ void GDNetworkManager::SetNonBlocking(socket_t sock) {
 
 void GDNetworkManager::Close(void) {
     if (udp_socket != INVALID_SOCKET) {
+        StopRTTLoop();
         close(udp_socket);
         udp_socket = INVALID_SOCKET;
     }
@@ -34,6 +37,7 @@ void GDNetworkManager::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("Bind", "port"), &GDNetworkManager::Bind);
 	ClassDB::bind_method(D_METHOD("Send", "ip", "port", "messsage"), &GDNetworkManager::Send);
 	ClassDB::bind_method(D_METHOD("Receive"), &GDNetworkManager::Receive);
+	ClassDB::bind_method(D_METHOD("StartRTT", "ip", "port"), &GDNetworkManager::StartRTTLoop);
 
     ADD_SIGNAL(MethodInfo("packet_received",
         PropertyInfo(Variant::STRING, "sender_ip"),
@@ -72,7 +76,7 @@ bool GDNetworkManager::Bind(int port) {
     return true;
 }
 
-void GDNetworkManager::Send(String ip, int port, GDBaseMessage* message) {
+void GDNetworkManager::SendLogic(const char* ip, int port, const BaseMessage* msg) {
     if (udp_socket == INVALID_SOCKET) return;
 
     static uint8_t buffer[65535];
@@ -84,15 +88,12 @@ void GDNetworkManager::Send(String ip, int port, GDBaseMessage* message) {
     dest_address.sin_family = AF_INET;
     dest_address.sin_port = htons(port);
     
-    if (inet_pton(AF_INET, ip.utf8().get_data(), &dest_address.sin_addr) <= 0) {
+    if (inet_pton(AF_INET, ip, &dest_address.sin_addr) <= 0) {
         UtilityFunctions::printerr("Invalid IP: ", ip);
         return;
     }
 
-    std::shared_ptr<BaseMessage> msg = message->GetMessage();
-
     MessageSize msg_size = msg->Serialize(buffer, buffer_size);
-
     
     int sent_bytes = sendto(
             udp_socket,
@@ -107,6 +108,10 @@ void GDNetworkManager::Send(String ip, int port, GDBaseMessage* message) {
         UtilityFunctions::printerr("Failed to send packet: ", strerror(errno));
         return;
     }
+}
+
+void GDNetworkManager::Send(String ip, int port, const Ref<GDBaseMessage>& message) {
+    SendLogic(ip.utf8().get_data(), port, message->GetMessage().get());
 }
 
 // Check for incoming packets (Call this in _process)
@@ -146,7 +151,7 @@ void GDNetworkManager::Receive() {
 
         MessageType type = BaseMessage::PeekType(buffer);
 
-        Ref<GDBaseMessage> msg_received;
+        Ref<GDBaseMessage> msg_received = nullptr;
         switch (type) {
         case HELO: {
             Ref<GDHELOMessage> helo = memnew(GDHELOMessage);
@@ -163,11 +168,53 @@ void GDNetworkManager::Receive() {
             msg_received = txt;
             break;
         }
+        case RTT: {
+            RTTMessage rtt_msg;
+            rtt_msg.Deserialize(buffer, received_bytes);
+            uint64_t rtt = rtt_msg.CalculateRTT();
+            UtilityFunctions::print("Current RTT : ", rtt);
+            break;
+        }
         default:
             UtilityFunctions::printerr("Unknown message type received");
             break;
         }
-        msg_received->GetMessage().get()->Deserialize(buffer, received_bytes);
-        emit_signal("packet_received", String(sender_ip), sender_port, msg_received);
+
+        if (msg_received.is_valid()) { // Asert if is valid
+            msg_received->GetMessage().get()->Deserialize(buffer, received_bytes);
+            emit_signal("packet_received", String(sender_ip), sender_port, msg_received);
+        }
     }
+}
+
+#include <thread>
+#include <chrono>
+#include <atomic>
+
+std::atomic<bool> _rtt_running{false};
+std::thread _rtt_thread;
+
+void GDNetworkManager::RTTLoopFunction(const char* ip, int port) {
+    while (_rtt_running) {
+        RTTMessage rtt_msg;
+        rtt_msg.Init();
+        SendLogic(ip, port, &rtt_msg);
+        std::this_thread::sleep_for(std::chrono::seconds(1)); // each second
+    }
+}
+
+void GDNetworkManager::StartRTTLoop(String ip, int port) {
+    if (_rtt_running) return; // already running
+
+    _rtt_running = true;
+    _rtt_thread = std::thread([this, ip, port] {
+        RTTLoopFunction(ip.utf8().get_data(), port);
+    });
+}
+
+
+void GDNetworkManager::StopRTTLoop() {
+    _rtt_running = false;
+    if (_rtt_thread.joinable())
+        _rtt_thread.join();
 }

@@ -2,13 +2,17 @@
 
 #include <cstdint>
 
+#include "gameplay/common_tools.hpp"
+
 enum MessageType : uint8_t {
     INVALID,
-    HELO,
-    HANDSHAKE,
-    GAMEPLAY,
-    BYE,
-    TEXT
+    HELO, // first message sent to establish connexion
+    HANDSHAKE, // validation of the connexion (?)
+    GAMEPLAY, // gameplay related messages (movement and state of the world)
+    INPUT, // input sent / received
+    TEXT, // msg text 
+    RTT, // RTT (Round-Trip Time)
+    BYE // end of the connexion
 };
 
 typedef unsigned int MessageSize;

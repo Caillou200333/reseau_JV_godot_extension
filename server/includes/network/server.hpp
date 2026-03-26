@@ -78,6 +78,8 @@ private:
     void HandlePackets();
 
 protected:
+    double dt = (1 / 60.f);
+
     /**
     * @brief Send a packet to the given client.
     */
@@ -88,4 +90,9 @@ protected:
      * @brief Handler function to implement to specify the comportment when handling a packet.
      */
     virtual void HandlePacket(struct Packet& packet_to_handle);
+
+    /**
+     * @brief Post process executed each frame.
+     */
+    virtual void PostProcess();
 };

@@ -3,8 +3,8 @@
 
 GameplayMessage::GameplayMessage():GameplayMessage(0,ClassID::PLAYER_CLASS,0,0) {}
 
-GameplayMessage::GameplayMessage(NetworkID network_id, ClassID class_id, uint8_t x, uint8_t y)
-    :BaseMessage(GAMEPLAY),
+GameplayMessage::GameplayMessage(NetworkID network_id, ClassID class_id, uint32_t x, uint32_t y)
+    :BaseMessage(MessageType::GAMEPLAY),
     _network_id(network_id),_class_id(class_id),_x(x),_y(y) {}
 
 
