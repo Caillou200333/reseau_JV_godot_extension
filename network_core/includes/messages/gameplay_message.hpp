@@ -1,19 +1,15 @@
 #pragma once
 
 #include "messages/base_message.hpp"
-#include "gameplay/common_tools.hpp"
+#include "gameplay/snapshot.hpp"
+
 
 class GameplayMessage : public BaseMessage {
 public:
     GameplayMessage();
-    GameplayMessage(NetworkID network_id, ClassID class_id, uint32_t x, uint32_t y);
+    GameplayMessage(const SnapShot& s);
 
-    NetworkID _network_id;
-    ClassID _class_id;
-
-    // Initial player position
-    uint32_t _x;
-    uint32_t _y;
+    SnapShot snapshot;
 
 protected:
     virtual void SerializePayload() const override;

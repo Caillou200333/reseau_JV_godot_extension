@@ -92,6 +92,11 @@ protected:
     virtual void HandlePacket(struct Packet& packet_to_handle);
 
     /**
+     * @brief Pre process executed each frame.
+     */
+    virtual void PreProcess();
+
+    /**
      * @brief Post process executed each frame.
      */
     virtual void PostProcess();

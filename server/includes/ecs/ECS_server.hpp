@@ -12,6 +12,7 @@ public:
 protected:
     virtual void HandlePacket(struct Packet& packet_to_handle) override;
 
+    virtual void PreProcess() override;
     virtual void PostProcess() override;
 
 private:
