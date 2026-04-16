@@ -45,7 +45,8 @@ void ECSServer::HandlePacket(struct Packet& packet_to_handle) {
         const struct ClientConnection& new_client = _client_manager.AddClient(packet_to_handle.sender_addr, entity_context->network_id);
 
         std::cout << "[Server] : Client " << new_client.client_name << " connected. Spawning Entity ID " << entity_context->network_id << "." << std::endl;
-        Replicate(entity_context);
+        HELOMessage response = HELOMessage(Server::dt, 200., entity_context->network_id);
+        SendMessage(response, packet_to_handle.sender_addr);
         break;
     }
     case HANDSHAKE:
@@ -94,6 +95,7 @@ void ECSServer::HandlePacket(struct Packet& packet_to_handle) {
 void ECSServer::PostProcess() {
     auto& entities = _entity_manager.AllEntities();
 
+    SnapShot snapshot = SnapShot(current_frame_id ++);
     for (auto& [network_id, entity_ctx] : entities) {
         auto& pos = entity_ctx.GetPosition();
         auto& vel = entity_ctx.GetVelocity();
@@ -101,13 +103,10 @@ void ECSServer::PostProcess() {
         pos.x += vel.x * dt;
         pos.y += vel.y * dt;
 
-        Replicate(&entity_ctx);
+        snapshot.AddEntityShot({network_id, entity_ctx.class_id, (uint32_t) pos.x, (uint32_t) pos.y});
     }
-}
 
-void ECSServer::Replicate(const struct ObjectContext* entity_context) const {
-    const struct Position& pos = entity_context->GetPosition();
-    GameplayMessage msg_to_send = GameplayMessage(entity_context->network_id, entity_context->class_id, pos.x, pos.y);
+    GameplayMessage msg_to_send = GameplayMessage(snapshot);
 
     for (const auto& client : _client_manager.AllClients()) {
         SendMessage(msg_to_send, client.address);

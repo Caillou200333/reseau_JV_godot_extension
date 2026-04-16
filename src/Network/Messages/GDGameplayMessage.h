@@ -2,18 +2,19 @@
 
 #include "Network/Messages/GDBaseMessage.h"
 
+#include "Network/Structs/GDSnapShotManager.h"
+
 class GDGameplayMessage : public GDBaseMessage {
     GDCLASS(GDGameplayMessage, GDBaseMessage);
+
+private:
+    unsigned int current_index = 0;
 
 protected:
     static void _bind_methods();
 
 public:
     GDGameplayMessage();
-
-    // Getters
-    uint32_t GetNetworkID() const;
-    uint32_t GetClassID() const;
-    uint32_t GetX() const;
-    uint32_t GetY() const;
+    
+    void SaveSnapShot(Ref<GDSnapShotManager> manager) const;
 };

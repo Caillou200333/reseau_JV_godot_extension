@@ -3,7 +3,6 @@
 #include "messages/base_message.hpp"
 #include "gameplay/snapshot.hpp"
 
-
 class GameplayMessage : public BaseMessage {
 public:
     GameplayMessage();

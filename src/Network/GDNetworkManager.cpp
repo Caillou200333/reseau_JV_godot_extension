@@ -76,9 +76,14 @@ bool GDNetworkManager::Bind(int port) {
     return true;
 }
 
+#include <mutex>
+// to be thread safe
+static std::mutex send_mutex;
+
 void GDNetworkManager::SendLogic(const char* ip, int port, const BaseMessage* msg) {
     if (udp_socket == INVALID_SOCKET) return;
 
+    std::lock_guard<std::mutex> lock(send_mutex);
     static uint8_t buffer[65535];
     static size_t buffer_size = sizeof(buffer);
 

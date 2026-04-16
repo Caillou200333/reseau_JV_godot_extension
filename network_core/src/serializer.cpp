@@ -12,4 +12,4 @@ void Serializer::SetReadingBuffer(const uint8_t* buffer, unsigned int size) {
     Serializer::_reading_size = size;
 }
 
-unsigned int Serializer::GetWritingSize() { return _writing_offset;}
+unsigned int Serializer::GetWritingSize() { return Serializer::_writing_offset;}

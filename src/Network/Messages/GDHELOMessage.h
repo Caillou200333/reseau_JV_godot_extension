@@ -10,4 +10,8 @@ protected:
 
 public:
     GDHELOMessage();
+
+    double GetFrameLength() const;
+    double GetEntityControlledSpeed() const;
+    uint32_t GetEntityControlledID() const;
 };

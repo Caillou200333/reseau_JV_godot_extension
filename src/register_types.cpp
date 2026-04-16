@@ -16,6 +16,9 @@
 #include "Network/Messages/GDInputMessage.h"
 #include "Network/Messages/GDTextMessage.h"
 
+#include "Network/Structs/GDInput.h"
+#include "Network/Structs/GDSnapShotManager.h"
+
 #include "Entities/GDEntity.h"
 #include "Entities/GDEntityManager.h"
 
@@ -38,6 +41,7 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level)
 	GDREGISTER_CLASS(GDTextMessage);
 
 	GDREGISTER_CLASS(GDInput);
+	GDREGISTER_CLASS(GDSnapShotManager);
 	
 	GDREGISTER_RUNTIME_CLASS(GDEntity);
 	GDREGISTER_RUNTIME_CLASS(GDEntityManager);

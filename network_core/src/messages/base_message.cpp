@@ -19,6 +19,7 @@ MessageSize BaseMessage::Serialize(uint8_t* data, unsigned int capacity) const {
 
     // Correct the size with the correct value
     unsigned int size = Serializer::GetWritingSize(); // final size of the message
+
     Serializer::SetWritingBuffer(data + sizeof(_type), sizeof(payload_size));
     payload_size = size - (sizeof(_type) + sizeof(payload_size));
     Serializer::Write(payload_size);
@@ -32,11 +33,12 @@ void BaseMessage::Deserialize(const uint8_t* data, unsigned int size) {
     MessageType type;
     Serializer::Read(type);
     if (_type != type)
-        throw std::runtime_error("Invalid message type read");
+        throw std::runtime_error("Invalid message type read : " + std::to_string((unsigned int) type));
 
     Serializer::Read(_payload_size);
+    //std::cout << "Type : " + std::to_string((unsigned int) type) + " / Expected = " + std::to_string(size) + " / Received = " + std::to_string(_payload_size + sizeof(_type) + sizeof(_payload_size))<< std::endl;
     if (_payload_size + sizeof(_type) + sizeof(_payload_size) != size)
-        throw std::runtime_error("Invalid message size read");
+        throw std::runtime_error("Invalid message size read : " + std::to_string(_payload_size + sizeof(_type) + sizeof(_payload_size)) + " instead of " + std::to_string(size));
 
     // Payload deserialization
     DeserializePayload();
