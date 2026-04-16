@@ -52,6 +52,8 @@ private:
     FrameID current_frame_id = INVALID_FRAME_ID;
     std::unordered_map<FrameID, SnapShot> stored_snapshots;
 
+    bool avoid_double_skip = false;
+
     bool HasSnapShot(FrameID id) const;
     void DeleteSnapShot(FrameID id);
     void SkipSnapShot(FrameID nb_frame_skipt);

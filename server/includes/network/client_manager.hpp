@@ -10,6 +10,7 @@ struct ClientConnection {
     char client_name = 'A';
     PlayerID client_id = INVALID_ID;
     NetworkID controlled_entity = -1; 
+    bool is_connected = true;
     
     // Comparaison basée sur l'adresse IP et le port
     bool operator==(const ClientConnection &other) const {
@@ -55,4 +56,5 @@ public:
     bool HasClient(const sockaddr_in &addr) const;
 
     const std::unordered_set<ClientConnection>& AllClients() const;
+    std::unordered_set<ClientConnection>& AllClients();
 };

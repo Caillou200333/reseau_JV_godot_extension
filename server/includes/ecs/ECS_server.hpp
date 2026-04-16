@@ -22,4 +22,9 @@ private:
     FrameID current_frame_id = 1;
 
     void ApplyInput(PlayerID player_id, struct ObjectContext* entity_context);
+
+    inline constexpr static double timeout_delay = 5.;
+    inline static double next_timeout_check = timeout_delay;
+
+    void AssertClientsConnection();
 };

@@ -25,7 +25,7 @@ public:
     /**
     * @brief Create a server with a designated port
     */
-    Server(int port);
+    Server(int port, double frame_length = (1. / 60.));
     ~Server();
 
     /** 

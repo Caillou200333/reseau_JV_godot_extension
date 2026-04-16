@@ -6,7 +6,7 @@
 using Clock = std::chrono::high_resolution_clock;
 using TimePoint = std::chrono::time_point<Clock>;
 
-Server::Server(int port):_port(port) {}
+Server::Server(int port, double frame_length):_port(port),dt(frame_length) {}
 
 Server::~Server() { Close(); delete _packet_manager; }
 

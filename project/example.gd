@@ -14,7 +14,7 @@ extends Node
 @onready var entity_controlled_id: int = -1
 @onready var entity_controlled_speed: float = 0.
 @export var delay: float = 0.1 # 100 ms
-@export var jitter: int = 5
+@export var jitter: int = 4
 
 var delta_max = 0
 
@@ -76,14 +76,13 @@ func _on_gd_network_manager_packet_received(_sender_ip: String, _sender_port: in
 	#print("Sender IP = ", sender_ip, "; port used = ", sender_port)
 	if message is GDHELOMessage:
 		var helo_msg = message as GDHELOMessage
-		print("frame = ", helo_msg.get_frame_length(), " | entity = ", helo_msg.get_entity_controlled_id())
+		#print("frame = ", helo_msg.get_frame_length(), " | entity = ", helo_msg.get_entity_controlled_id())
 		snapshot_manager.set_frame_length(helo_msg.get_frame_length())
-		print("frame_length = ", snapshot_manager.get_frame_length())
-		print("Frame delay = ", int(delay / snapshot_manager.get_frame_length()) + jitter)
-		snapshot_manager.set_max_frame(int(delay / snapshot_manager.get_frame_length()) + jitter)
+		#print("frame_length = ", snapshot_manager.get_frame_length())
+		print("Frame delay = ", int(delay * 2 / snapshot_manager.get_frame_length()) + jitter)
+		snapshot_manager.set_max_frame(int(delay * 2. / snapshot_manager.get_frame_length()) + jitter)
 		entity_controlled_id = helo_msg.get_entity_controlled_id()
 		entity_controlled_speed = helo_msg.get_entity_controlled_speed()
-		print("Speed = ", entity_controlled_speed)
 		is_connecting = false
 	if message is GDGameplayMessage:
 		var gameplay_msg = message as GDGameplayMessage

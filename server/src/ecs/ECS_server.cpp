@@ -26,6 +26,10 @@ void ECSServer::HandlePacket(struct Packet& packet_to_handle) {
     }
     base_msg->Deserialize(packet_to_handle.data, packet_to_handle.size);
 
+    if (_client_manager.HasClient(packet_to_handle.sender_addr)) {
+        const_cast<struct ClientConnection&>(_client_manager.GetClient(packet_to_handle.sender_addr)).is_connected = true;
+    }
+
     switch (base_msg->GetType()) {
     case HELO: {
         auto* msg = dynamic_cast<HELOMessage*>(base_msg.get());
@@ -106,6 +110,8 @@ void ECSServer::PostProcess() {
         snapshot.AddEntityShot({network_id, entity_ctx.class_id, (uint32_t) pos.x, (uint32_t) pos.y});
     }
 
+    AssertClientsConnection();
+
     GameplayMessage msg_to_send = GameplayMessage(snapshot);
 
     for (const auto& client : _client_manager.AllClients()) {
@@ -127,5 +133,26 @@ void ECSServer::ApplyInput(PlayerID player_id, struct ObjectContext* entity_cont
         if (input->HasKey(InputID::INPUT_DOWN)) vel.y += speed;
         if (input->HasKey(InputID::INPUT_LEFT)) vel.x -= speed;
         if (input->HasKey(InputID::INPUT_RIGHT)) vel.x += speed;
+    }
+}
+
+void ECSServer::AssertClientsConnection() {
+    next_timeout_check -= Server::dt;
+    
+    if (next_timeout_check <= 0.) {
+        auto& clients = _client_manager.AllClients();
+
+        for (auto it = clients.begin(); it != clients.end(); ) {
+            if (!it->is_connected) {
+                std::cout << "Client " << it->client_name << " : Deconnected" << std::endl;
+                _entity_manager.RemoveEntity(it->controlled_entity);
+                it = clients.erase(it); // ✔ safe
+            } else {
+                const_cast<struct ClientConnection&>(*it).is_connected = false;
+                ++it;
+            }
+        }
+        
+        next_timeout_check = timeout_delay;
     }
 }

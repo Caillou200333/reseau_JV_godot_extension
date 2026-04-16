@@ -95,25 +95,13 @@ FrameID SnapShotManager::GetCurrentFrameID() const { return current_frame_id; }
 
 const struct SnapShot SnapShotManager::GetCurrentSnapShot(double delta) {
     current_frame_time_spent += delta;
+    
     unsigned int nb_frame_skipt = (unsigned int) (current_frame_time_spent / frame_length);
     if (nb_frame_skipt > 0) {
-        SkipSnapShot(nb_frame_skipt);
-        /*
-        FrameID new_current_frame_id = current_frame_id + nb_frame_skipt;
-        
-        FrameID last_available_frame_id = GetLastID(new_current_frame_id);
-        FrameID next_available_frame_id = GetNextID(new_current_frame_id);
-        FrameID delta_frame_skipt = next_available_frame_id - last_available_frame_id;
+        if (!avoid_double_skip) 
+            SkipSnapShot(nb_frame_skipt);
 
-        if (delta_frame_skipt > 0) {
-            double alpha_skipt = (double)(new_current_frame_id - current_frame_id) / (double) delta_frame_skipt;
-            SaveSnapShot(stored_snapshots[last_available_frame_id].Lerp(alpha_skipt, stored_snapshots[next_available_frame_id]));
-        }
-
-        for (FrameID id = current_frame_id; id < new_current_frame_id; ++ id) {
-            DeleteSnapShot(id);
-        }
-        current_frame_id = new_current_frame_id;*/
+        avoid_double_skip = false;
         current_frame_time_spent -= nb_frame_skipt * frame_length;
     }
 
@@ -123,7 +111,7 @@ const struct SnapShot SnapShotManager::GetCurrentSnapShot(double delta) {
     const struct SnapShot& next_snapshot = stored_snapshots[next_frame_id];
 
     FrameID delta_frame = next_frame_id - current_frame_id;
-    double alpha = delta / (delta_frame * frame_length);
+    double alpha = current_frame_time_spent / (delta_frame * frame_length);
 
     return current_snapshot.Lerp(alpha, next_snapshot);
 }
@@ -139,6 +127,7 @@ void SnapShotManager::SaveSnapShot(const struct SnapShot& s) {
             is_buffer_ready = true;
             FrameID nb_frame_skipt = s.frame_id - (current_frame_id + max_frame);
             SkipSnapShot(nb_frame_skipt);
+            avoid_double_skip = true;
         }
     }
 }

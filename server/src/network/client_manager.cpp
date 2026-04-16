@@ -33,3 +33,7 @@ bool ClientManager::HasClient(const sockaddr_in &addr) const {
 const std::unordered_set<ClientConnection>& ClientManager::AllClients() const {
     return clients;
 }
+
+std::unordered_set<ClientConnection>& ClientManager::AllClients() {
+    return clients;
+}
