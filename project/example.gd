@@ -76,7 +76,7 @@ func _process(delta: float) -> void:
 					var entity_controlled : GDEntity = entity_manager.get(entity_controlled_id)
 					var d : Vector2 = snapshot_manager.get_last_frame_position(entity_controlled_id) - entity_controlled.position #Vector2(snapshot_manager.get_x(), snapshot_manager.get_y()) - entity_controlled.position
 					var d_len : float = d.length()
-					print("d_len = ", d_len)
+					#print("d_len = ", d_len)
 					if d_len < 2.:
 						#print("It's fine")
 						pass
