@@ -26,6 +26,8 @@ void GDSnapShotManager::_bind_methods() {
     ClassDB::bind_method(D_METHOD("get_x"), &GDSnapShotManager::GetX);
     ClassDB::bind_method(D_METHOD("get_y"), &GDSnapShotManager::GetY);
 
+    ClassDB::bind_method(D_METHOD("get_last_frame_position", "network_id"), &GDSnapShotManager::GetLastFramePosition);
+
     // Optional: expose as properties in Godot editor
     ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "frame_length"), "set_frame_length", "get_frame_length");
     ADD_PROPERTY(PropertyInfo(Variant::INT, "max_frame"), "set_max_frame", "get_max_frame");
@@ -65,10 +67,21 @@ uint32_t GDSnapShotManager::GetClassID() const {
     return current_snapshot.entities[current_entityshot_id].class_id;
 }
 
-uint32_t GDSnapShotManager::GetX() const {
+float GDSnapShotManager::GetX() const {
     return current_snapshot.entities[current_entityshot_id].x;
 }
 
-uint32_t GDSnapShotManager::GetY() const {
+float GDSnapShotManager::GetY() const {
     return current_snapshot.entities[current_entityshot_id].y;
+}
+
+Vector2 GDSnapShotManager::GetLastFramePosition(uint32_t network_id) const {
+    const struct SnapShot& last_snapshot = manager.GetLastSnapShot();
+    
+    for (const auto& entity : last_snapshot.entities) {
+        if (network_id == entity.network_id)
+            return Vector2(entity.x, entity.y);
+    }
+
+    return Vector2();
 }

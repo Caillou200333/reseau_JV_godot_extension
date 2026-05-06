@@ -107,7 +107,7 @@ void ECSServer::PostProcess() {
         pos.x += vel.x * dt;
         pos.y += vel.y * dt;
 
-        snapshot.AddEntityShot({network_id, entity_ctx.class_id, (uint32_t) pos.x, (uint32_t) pos.y});
+        snapshot.AddEntityShot({network_id, entity_ctx.class_id, (float) pos.x, (float) pos.y});
     }
 
     AssertClientsConnection();
@@ -123,12 +123,12 @@ void ECSServer::ApplyInput(PlayerID player_id, struct ObjectContext* entity_cont
     const struct Input* input = nullptr;
     struct Velocity& vel = entity_context->GetVelocity();
 
+    vel.x = 0.;
+    vel.y = 0.;
+
+    const double speed = 200.;
+
     while ((input = InputMessage::GetNextInput(player_id))) {
-        vel.x = 0.;
-        vel.y = 0.;
-
-        const double speed = 200.;
-
         if (input->HasKey(InputID::INPUT_UP)) vel.y -= speed;
         if (input->HasKey(InputID::INPUT_DOWN)) vel.y += speed;
         if (input->HasKey(InputID::INPUT_LEFT)) vel.x -= speed;

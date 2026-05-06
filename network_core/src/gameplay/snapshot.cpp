@@ -4,7 +4,7 @@
 
 // EntityShot
 const struct EntityShot EntityShot::Lerp(double alpha, const struct EntityShot& rhs) const {
-    return {network_id, class_id, (uint32_t)((1-alpha)*x + alpha*rhs.x), (uint32_t)((1-alpha)*y + alpha*rhs.y)};
+    return {network_id, class_id, (float)((1.-alpha)*x + alpha*rhs.x), (float)((1-alpha)*y + alpha*rhs.y)};
 }
 
 
@@ -45,7 +45,7 @@ bool SnapShotManager::HasSnapShot(FrameID id) const {
 
 void SnapShotManager::DeleteSnapShot(FrameID id) { stored_snapshots.erase(id); }
 
-FrameID SnapShotManager::GetLastID(FrameID id, bool included_self) {
+FrameID SnapShotManager::GetLastID(FrameID id, bool included_self) const {
     FrameID last_id = (included_self) ? id : (id - 1);
     
     while ((last_id >= current_frame_id) && !HasSnapShot(last_id)) { -- last_id; }
@@ -55,7 +55,7 @@ FrameID SnapShotManager::GetLastID(FrameID id, bool included_self) {
     return last_id;
 }
 
-FrameID SnapShotManager::GetNextID(FrameID id, bool included_self) {
+FrameID SnapShotManager::GetNextID(FrameID id, bool included_self) const {
     FrameID next_id = (included_self) ? id : (id + 1);
     
     while ((next_id < (current_frame_id + max_frame)) && !HasSnapShot(next_id)) { ++ next_id; }
@@ -98,10 +98,10 @@ const struct SnapShot SnapShotManager::GetCurrentSnapShot(double delta) {
     
     unsigned int nb_frame_skipt = (unsigned int) (current_frame_time_spent / frame_length);
     if (nb_frame_skipt > 0) {
-        if (!avoid_double_skip) 
+        //if (!avoid_double_skip) 
             SkipSnapShot(nb_frame_skipt);
 
-        avoid_double_skip = false;
+        //avoid_double_skip = false;
         current_frame_time_spent -= nb_frame_skipt * frame_length;
     }
 
@@ -116,6 +116,11 @@ const struct SnapShot SnapShotManager::GetCurrentSnapShot(double delta) {
     return current_snapshot.Lerp(alpha, next_snapshot);
 }
 
+const struct SnapShot& SnapShotManager::GetLastSnapShot() const {
+    FrameID last_frame_id = GetLastID(current_frame_id + max_frame);
+    return stored_snapshots.at(last_frame_id);
+}
+
 void SnapShotManager::SaveSnapShot(const struct SnapShot& s) {
     if (current_frame_id == INVALID_FRAME_ID)
         current_frame_id = s.frame_id;
@@ -127,7 +132,7 @@ void SnapShotManager::SaveSnapShot(const struct SnapShot& s) {
             is_buffer_ready = true;
             FrameID nb_frame_skipt = s.frame_id - (current_frame_id + max_frame);
             SkipSnapShot(nb_frame_skipt);
-            avoid_double_skip = true;
+            //avoid_double_skip = true;
         }
     }
 }

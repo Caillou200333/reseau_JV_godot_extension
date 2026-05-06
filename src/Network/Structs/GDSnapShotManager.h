@@ -1,6 +1,7 @@
 #pragma once
 
 #include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/variant/vector2.hpp>
 
 #include "gameplay/snapshot.hpp"
 
@@ -34,8 +35,11 @@ public:
 
     uint32_t GetNetworkID() const;
     uint32_t GetClassID() const;
-    uint32_t GetX() const;
-    uint32_t GetY() const;
+    float GetX() const;
+    float GetY() const;
+
+    // Return the position of the entity corresponding to the network_id from the last received snapshot (current known server frame)
+    Vector2 GetLastFramePosition(uint32_t network_id) const;
 
     SnapShotManager manager;
 

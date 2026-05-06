@@ -12,7 +12,7 @@ void GDEntity::_bind_methods() {
     ClassDB::bind_method(D_METHOD("move", "x", "y"), &GDEntity::Move);
 }
 
-void GDEntity::Init(uint32_t x, uint32_t y) {
+void GDEntity::Init(float x, float y) {
     set_position(Vector2(x, y));
     
     Ref<Texture2D> texture = ResourceLoader::get_singleton()->load("res://icon.svg");
@@ -23,6 +23,6 @@ void GDEntity::Init(uint32_t x, uint32_t y) {
     }
 }
 
-void GDEntity::Move(uint32_t x, uint32_t y) {
+void GDEntity::Move(float x, float y) {
     set_position(Vector2(x, y));
 }

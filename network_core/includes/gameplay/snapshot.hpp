@@ -12,8 +12,8 @@ struct EntityShot {
     NetworkID network_id;
     ClassID class_id;
 
-    uint32_t x;
-    uint32_t y;
+    float x;
+    float y;
 
     const struct EntityShot Lerp(double alpha, const struct EntityShot& rhs) const;
 };
@@ -42,6 +42,7 @@ public:
 
     FrameID GetCurrentFrameID() const;
     const struct SnapShot GetCurrentSnapShot(double delta);
+    const struct SnapShot& GetLastSnapShot() const;
 
     void SaveSnapShot(const struct SnapShot& s);
 
@@ -60,6 +61,6 @@ private:
 
     // Return the last/next valid FrameID starting from given "id"
     // Return current - 1 / current + max_frame if doesn't exist
-    FrameID GetLastID(FrameID id, bool included_self = true);
-    FrameID GetNextID(FrameID id, bool included_self = true);
+    FrameID GetLastID(FrameID id, bool included_self = true) const;
+    FrameID GetNextID(FrameID id, bool included_self = true) const;
 };

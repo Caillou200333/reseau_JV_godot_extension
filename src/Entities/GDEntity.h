@@ -14,7 +14,7 @@ public:
 	GDEntity();
 	~GDEntity();
 
-	void Init(uint32_t x, uint32_t y);
+	void Init(float x, float y);
 
-	void Move(uint32_t x, uint32_t y);
+	void Move(float x, float y);
 };
